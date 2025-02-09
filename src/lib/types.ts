@@ -13,8 +13,8 @@ export interface EvalEntity {
   id: string;
   questionText: string;
   creatorModelId: string;
-  tags?: string;
-  difficulty?: string;
+  tags: string | null;
+  difficulty: string | null;
   createdAt: Date;
   creatorModel?: ModelEntity;
   results?: ResultEntity[];
@@ -25,8 +25,8 @@ export interface ResultEntity {
   id: string;
   evalId: string;
   modelId: string;
-  responseText?: string;
-  errorLog?: string;
+  responseText: string | null;
+  errorLog: string | null;
   createdAt: Date;
   eval?: EvalEntity;
   model?: ModelEntity;

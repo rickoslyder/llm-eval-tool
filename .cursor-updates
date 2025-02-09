@@ -8,3 +8,4 @@
 - Captured screenshot of Button component stories in Storybook
 - Fixed type errors in judgments and results routers by properly handling null values and using Prisma types.
 - Implemented Model Manager UI with table view and form for creating new models.
+- Implemented Generate Evals UI with form for entering prompts and selecting models, plus a table to display generated evals.

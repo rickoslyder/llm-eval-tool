@@ -1,0 +1,2 @@
+- Implemented Generate Evals UI with form for entering prompts and selecting models, plus a table to display generated evals.
+- Implemented Eval Runner UI with multi-select forms for evals and models, parallel execution of eval-model combinations, and a results table with status indicators. 

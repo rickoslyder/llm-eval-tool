@@ -1,11 +1,12 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DIRECT_URL")
+  schemas  = ["public", "auth"]
 }
 
 model User {
@@ -22,6 +23,8 @@ model User {
   isAdmin        Boolean   @default(false)
   accounts       Account[]
   sessions       Session[]
+
+  @@schema("public")
 }
 
 model Account {
@@ -40,6 +43,7 @@ model Account {
   User              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
+  @@schema("public")
 }
 
 model Session {
@@ -47,19 +51,24 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@schema("public")
 }
 
 enum UserRole {
   user
   admin
+
+  @@schema("public")
 }
 
 model Allowlist {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
+
+  @@schema("public")
 }
 
 model VerificationToken {
@@ -68,4 +77,58 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@schema("public")
+}
+
+model Model {
+  id         String    @id @default(cuid())
+  name       String
+  baseUrl    String
+  apiKey     String
+  createdAt  DateTime  @default(now())
+  Evals      Eval[]
+  Results    Result[]
+  Judgments  Judgment[] @relation("JudgeModel")
+
+  @@schema("public")
+}
+
+model Eval {
+  id              String    @id @default(cuid())
+  questionText    String
+  creatorModelId  String
+  tags            String?
+  difficulty      Int?
+  createdAt       DateTime  @default(now())
+  creatorModel    Model     @relation(fields: [creatorModelId], references: [id])
+  Results         Result[]
+  Judgments       Judgment[]
+
+  @@schema("public")
+}
+
+model Result {
+  id           String   @id @default(cuid())
+  evalId       String
+  modelId      String
+  responseText String?
+  errorLog     String?
+  timestamp    DateTime @default(now())
+  Eval         Eval     @relation(fields: [evalId], references: [id])
+  Model        Model    @relation(fields: [modelId], references: [id])
+
+  @@schema("public")
+}
+
+model Judgment {
+  id               String   @id @default(cuid())
+  evalId           String
+  judgeModelId     String
+  score            Float
+  justificationText String?
+  timestamp        DateTime @default(now())
+  Eval             Eval     @relation(fields: [evalId], references: [id])
+  judgeModel       Model    @relation("JudgeModel", fields: [judgeModelId], references: [id])
+
+  @@schema("public")
 }

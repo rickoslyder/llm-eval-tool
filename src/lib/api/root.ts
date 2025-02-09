@@ -1,4 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "./trpc";
+import { modelRouter } from "./routers/modelRouter";
+import { evalRouter } from "./routers/evalRouter";
 // import all routers here
 
 /**
@@ -7,6 +9,8 @@ import { createCallerFactory, createTRPCRouter } from "./trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  model: modelRouter,
+  evals: evalRouter,
   // add routers here
 });
 

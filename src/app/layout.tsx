@@ -6,11 +6,10 @@ import { Metadata } from "next";
 import ClientProvider from "@/components/ClientProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ThemeAwareToast } from "@/components/theme/ThemeAwareToast";
-import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
-  title: "LLM Eval Tool",
-  description: "A tool for evaluating LLM responses",
+  title: "",
+  description: "",
   icons: {
     icon: "/favicon.ico",
   },
@@ -27,10 +26,7 @@ export default function RootLayout({
         <ThemeProvider defaultTheme="system" enableSystem>
           <ClientProvider>
             <TRPCReactProvider>
-              <Navigation />
-              <main className="container mx-auto px-4">
-                {children}
-              </main>
+              {children}
               <ThemeAwareToast />
             </TRPCReactProvider>
           </ClientProvider>

@@ -1,18 +1,15 @@
-import React from "react";
-import "@/app/globals.css";
+import "./globals.css";
+import { Inter } from "next/font/google";
+import NavigationBar from "@/components/NavigationBar";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TRPCReactProvider } from "@/lib/trpc/react";
-import { Metadata } from "next";
-import ClientProvider from "@/components/ClientProvider";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { ThemeAwareToast } from "@/components/theme/ThemeAwareToast";
 
-export const metadata: Metadata = {
-  title: "",
-  description: "",
-  icons: {
-    icon: "/favicon.ico",
-  },
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: "LLM Eval Tool",
+  description: "A tool for evaluating LLM performance",
 };
 
 export default function RootLayout({
@@ -21,16 +18,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        <ThemeProvider defaultTheme="system" enableSystem>
-          <ClientProvider>
-            <TRPCReactProvider>
-              {children}
-              <ThemeAwareToast />
-            </TRPCReactProvider>
-          </ClientProvider>
-        </ThemeProvider>
+    <html lang="en">
+      <body className={inter.className}>
+        <TRPCReactProvider>
+          <NavigationBar />
+          {children}
+          <ToastContainer />
+        </TRPCReactProvider>
       </body>
     </html>
   );

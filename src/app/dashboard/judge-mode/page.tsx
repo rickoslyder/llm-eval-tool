@@ -3,13 +3,13 @@
 import React, { FormEvent } from "react";
 import { api } from "@/lib/trpc/react";
 import { toast } from "react-toastify";
-import type { JudgmentEntity } from "@/lib/types";
+import type { JudgmentEntity, EvalEntity, ModelEntity } from "@/lib/types";
 
 function JudgmentsList() {
     const { data: judgments, isLoading } = api.judgments.listJudgments.useQuery({
         includeEval: true,
-        includeJudgeModel: true,
-    });
+        includeJudgeModel: true
+    }) as { data: (JudgmentEntity & { eval: EvalEntity; judgeModel: ModelEntity })[], isLoading: boolean };
 
     if (isLoading) {
         return <div>Loading judgments...</div>;

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { api } from "@/lib/trpc/react";
-import type { ModelEntity, ResultEntity } from "@/lib/types";
+import type { ModelEntity, ResultEntity, EvalEntity } from "@/lib/types";
 
 interface LeaderboardEntry {
     modelId: string;
@@ -81,10 +81,10 @@ function LeaderboardTable() {
 
 function ModelComparison() {
     const { data: models } = api.models.listModels.useQuery();
-    const { data: results } = api.results.listResults.useQuery({
-        includeEval: true,
+    const { data: results, isLoading: resultsLoading } = api.results.listResults.useQuery({
         includeModel: true,
-    });
+        includeEval: true
+    }) as { data: (ResultEntity & { model: ModelEntity; eval: EvalEntity })[], isLoading: boolean };
     const { data: judgments } = api.judgments.listJudgments.useQuery({
         includeEval: true,
         includeJudgeModel: true,
@@ -96,8 +96,8 @@ function ModelComparison() {
 
     // Calculate success rate for each model
     const modelStats: ModelStats[] = models.map((model: ModelEntity) => {
-        const modelResults = results.filter((r: ResultEntity) => r.modelId === model.id);
-        const successfulRuns = modelResults.filter((r: ResultEntity) => !r.errorLog).length;
+        const modelResults = results.filter((r) => r.modelId === model.id);
+        const successfulRuns = modelResults.filter((r) => !r.errorLog).length;
         const totalRuns = modelResults.length;
         const successRate = totalRuns > 0 ? (successfulRuns / totalRuns) * 100 : 0;
 

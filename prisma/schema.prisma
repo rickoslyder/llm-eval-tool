@@ -73,6 +73,7 @@ model VerificationToken {
 model Model {
   id         String   @id @default(cuid())
   name       String
+  modelId    String
   baseUrl    String
   apiKey     String
   createdAt  DateTime @default(now())
@@ -88,6 +89,7 @@ model Eval {
   creatorModelId String
   tags           String?
   difficulty     String?
+  metadata       Json?    @default("{}")
   createdAt      DateTime @default(now())
 
   creatorModel   Model    @relation(fields: [creatorModelId], references: [id])

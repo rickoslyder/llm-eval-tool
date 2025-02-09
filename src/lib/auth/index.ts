@@ -73,50 +73,56 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: "database",
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user, email, account, profile }) {
       try {
-        const email = user?.email;
-        if (!email) return false;
-
-        /*
-        // Enable this to restrict sign-ins to certain domains or allowlist
-        const domainCheck = ALLOWED_DOMAINS.some((d) => email.endsWith(d));
-        if (!domainCheck) {
-          const inAllowlist = await prisma.allowlist.findUnique({
-            where: { email },
-          });
-
-          if (!inAllowlist) {
-            return false;
-          }
+        console.log("SignIn callback:", { user, email, account });
+        const userEmail = user?.email;
+        if (!userEmail) {
+          console.error("No email provided");
+          return false;
         }
-        */
-
         return true;
       } catch (error) {
         console.error("SignIn callback error:", error);
         return false;
       }
     },
-    async session({ session, user }) {
+    async session({ session, token, user }) {
       try {
+        console.log("Session callback:", { session, token, user });
         return {
           ...session,
           user: {
             ...session.user,
-            id: user.id,
-            role: user.role,
-            login: user.login,
-            isAdmin: user.isAdmin,
+            id: token.sub || user?.id,
+            role: user?.role || "user",
+            login: user?.login,
+            isAdmin: user?.isAdmin || false,
           },
         };
       } catch (error) {
         console.error("Session callback error:", error);
         return session;
+      }
+    },
+    async jwt({ token, user, account, profile }) {
+      try {
+        console.log("JWT callback:", { token, user, account });
+        if (user) {
+          token.id = user.id;
+          token.role = user.role;
+          token.isAdmin = user.isAdmin;
+        }
+        return token;
+      } catch (error) {
+        console.error("JWT callback error:", error);
+        return token;
       }
     },
   },

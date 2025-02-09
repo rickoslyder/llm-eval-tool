@@ -1,12 +1,14 @@
 import { publicProcedure, protectedProcedure, createTRPCRouter } from "../trpc";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import type { ModelEntity } from "@/lib/types";
 
 export const modelsRouter = createTRPCRouter({
   createModel: protectedProcedure
     .input(
       z.object({
         name: z.string(),
+        modelId: z.string(),
         baseUrl: z.string(),
         apiKey: z.string(),
       })
@@ -16,7 +18,8 @@ export const modelsRouter = createTRPCRouter({
     }),
 
   listModels: publicProcedure.query(async () => {
-    return prisma.model.findMany();
+    const models = await prisma.model.findMany();
+    return models as ModelEntity[];
   }),
 
   getModel: publicProcedure
@@ -37,6 +40,7 @@ export const modelsRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         name: z.string().optional(),
+        modelId: z.string().optional(),
         baseUrl: z.string().optional(),
         apiKey: z.string().optional(),
       })

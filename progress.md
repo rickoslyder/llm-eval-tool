@@ -7,3 +7,10 @@
 - Implemented proper type handling for Prisma schema compatibility
 - Added success/error toasts for user feedback
 - Fixed type errors related to nullable fields in judgment entities 
+
+## Leaderboard Implementation
+- Created Leaderboard UI with model rankings based on judgment scores
+- Added visual progress bars for scores and success rates
+- Implemented model performance comparison section
+- Added loading states and empty state handling
+- Used existing getLeaderboard query for data fetching 
